@@ -38,7 +38,7 @@
 #include "util/module.h"
 #include "util/timer.h"
 
-using M = MeshStructured<double, 2>;
+using M = MeshCartesian<double, 2>;
 using Scal = typename M::Scal;
 using Vect = typename M::Vect;
 using MIdx = typename M::MIdx;
@@ -353,7 +353,7 @@ void Solver::Run() {
       conf.viscosity = ToMulti(var.Vect["tracer_viscosity"]);
       conf.scheme = GetConvSc(var.String["tracer_scheme"]);
       conf.slip.resize(conf.layers);
-      conf.fc_src = &fc_src_tracer;
+      conf.fc_source = &fc_src_tracer;
       using SlipType = typename TracerInterface<M>::SlipType;
       for (size_t i = 0; i < conf.layers; ++i) {
         conf.slip[i].type = SlipType::none;
