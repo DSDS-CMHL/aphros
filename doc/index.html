@@ -6,11 +6,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aphros documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/center.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -28,6 +27,7 @@
 
     <div class="document">
       <div class="documentwrapper">
+        <div class="bodywrapper">
           <div class="body" role="main">
             
   <div class="section" id="aphros">
@@ -353,6 +353,7 @@ Parameters of the solver are provided by</p>
   <span class="kt">bool</span> <span class="n">convsymm</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span> <span class="c1">// symmetric solver for linear system in convdiff</span>
   <span class="n">Conv</span> <span class="n">conv</span> <span class="o">=</span> <span class="n">Conv</span><span class="o">::</span><span class="n">imp</span><span class="p">;</span> <span class="c1">// convection-diffusion solver</span>
   <span class="n">Scal</span> <span class="n">outlet_relax</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="n">explviscous</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> <span class="c1">// enable explicit viscous terms</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -510,7 +511,7 @@ and in three dimensions consists of three substeps, or sweeps.</p>
 <p>Given the PLIC reconstruction of the interface,
 one sweep computes fluxes, updates the volume fractions
 and propagates the colors to downwind cells</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="nf">Sweep</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">Sweep</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// v: mixture flux</span>
   <span class="c1">// w: phase flux</span>
   <span class="c1">// qf: phase color from upwind cell</span>
@@ -549,7 +550,7 @@ and propagates the colors to downwind cells</p>
 </div>
 <p>Function <code class="docutils literal notranslate"><span class="pre">Plic()</span></code> builds the PLIC reconstruction in interfacial cells
 and returns normals <em>n</em> and plane constants <em>a</em>:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="nf">Plic</span><span class="p">()</span> <span class="p">{</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">Plic</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">for</span> <span class="p">(</span><span class="nl">c</span> <span class="p">:</span> <span class="n">cells</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">for</span> <span class="p">(</span><span class="nl">l</span> <span class="p">:</span> <span class="n">layers</span><span class="p">)</span> <span class="p">{</span>
       <span class="n">uu</span> <span class="o">=</span> <span class="n">Stencil3</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">q</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">l</span><span class="p">));</span>
@@ -580,7 +581,7 @@ is given in <a class="reference external" href="https://github.com/cselab/aphros
 connected components.  The following function initializes the color field with
 unique values, then iteratively joins the colors from adjacent cells by taking
 the minimal color until equilibration.</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="nf">Recolor</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">Recolor</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">q_new</span> <span class="o">=</span> <span class="n">InitUnique</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">q</span><span class="p">);</span>
 
   <span class="n">changed</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
@@ -608,7 +609,7 @@ the minimal color until equilibration.</p>
 <p>To reduce the number of iterations, function <code class="docutils literal notranslate"><span class="pre">RecolorCorners()</span></code>
 runs the same algorithm for corners from cubic subdomains.
 The colors propagate through the domain faster.</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="nf">RecolorCorners</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">q_new</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">RecolorCorners</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">q_new</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// map: mapping from old color to new color</span>
   <span class="k">for</span> <span class="p">(</span><span class="nl">c</span> <span class="p">:</span> <span class="n">corners</span> <span class="n">of</span> <span class="n">subdomains</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">for</span> <span class="p">(</span><span class="nl">l</span> <span class="p">:</span> <span class="n">layers</span><span class="p">)</span> <span class="p">{</span>
@@ -1325,7 +1326,8 @@ symm {
 <p>The following function parses parses a file
 and returns a <code class="docutils literal notranslate"><span class="pre">MapEmbed</span></code> object containing face and cut-cell conditions.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>    <span class="n">MapEmbed</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">MapEmbed</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;&gt;</span>
-<span class="n">ParseGroups</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">istream</span><span class="o">&amp;</span> <span class="n">fin</span><span class="p">,</span> <span class="k">const</span> <span class="n">MEB</span><span class="o">&amp;</span> <span class="n">eb</span><span class="p">)</span>
+<span class="n">ParseGroups</span><span class="p">(</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">istream</span><span class="o">&amp;</span> <span class="n">fin</span><span class="p">,</span> <span class="k">const</span> <span class="n">MEB</span><span class="o">&amp;</span> <span class="n">eb</span><span class="p">,</span> <span class="k">const</span> <span class="n">FieldCell</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;&amp;</span> <span class="n">fc_innermask</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1700,7 +1702,7 @@ relative distance from the node first[i].</p>
 <span class="cp">#include</span> <span class="cpf">&lt;distr/distrbasic.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;solver/vof.h&gt;</span><span class="cp"></span>
 
-<span class="k">using</span> <span class="n">M</span> <span class="o">=</span> <span class="n">MeshStructured</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span> <span class="mi">3</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">M</span> <span class="o">=</span> <span class="n">MeshCartesian</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span> <span class="mi">3</span><span class="o">&gt;</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">Scal</span> <span class="o">=</span> <span class="k">typename</span> <span class="nc">M</span><span class="o">::</span><span class="n">Scal</span><span class="p">;</span>
 <span class="k">using</span> <span class="n">Vect</span> <span class="o">=</span> <span class="k">typename</span> <span class="nc">M</span><span class="o">::</span><span class="n">Vect</span><span class="p">;</span>
 
@@ -1976,7 +1978,29 @@ To fix, changed the map from <code class="docutils literal notranslate"><span cl
 (ensures exact comparison of points)
 and introduced <code class="docutils literal notranslate"><span class="pre">canonical(x)</span></code> to get a single point from the cell of
 size <code class="docutils literal notranslate"><span class="pre">tol</span></code>.</p>
-<img alt="_images/vtkmerge.svg" class="align-center" src="_images/vtkmerge.svg" /></div>
+<a class="reference internal image-reference" href="_images/vtkmerge.svg"><img alt="_images/vtkmerge.svg" class="align-center" src="_images/vtkmerge.svg" width="300" /></a>
+</div>
+<div class="section" id="explicit-part-of-viscous-stress">
+<h3><span class="section-number">13.12. </span>Explicit part of viscous stress<a class="headerlink" href="#explicit-part-of-viscous-stress" title="Permalink to this headline">¶</a></h3>
+<p>2021-06-11 15:32:27</p>
+<p>The viscous stress tensor has the form <img class="math" src="_images/math/1b6a3ce382aa40ed3b45a00b4c8d5a0cf8408dec.svg" alt="\mu(\nabla\mathbf{u} +\nabla\mathbf{u}^T)" style="vertical-align: -5px"/>.
+Parameter <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">explviscous</span></code> controls whether the second term is included in
+the discretization. Setting <code class="docutils literal notranslate"><span class="pre">explviscous=0</span></code> changes the approximated tensor
+to <img class="math" src="_images/math/c3010be01decb691a8b7377d167b5541ed82c2a0.svg" alt="\mu\nabla\mathbf{u}" style="vertical-align: -4px"/>.
+This omitted term <img class="math" src="_images/math/9b500f1188530918bbf853f4c57608816db13a8a.svg" alt="\mu\nabla\mathbf{u}^T" style="vertical-align: -4px"/> is significant if the dynamic viscosity is non-uniform.</p>
+<p>The following test case of a rising bubble
+(based on <a class="reference external" href="http://basilisk.fr/src/test/rising.c">http://basilisk.fr/src/test/rising.c</a>) shows a small difference.</p>
+<table class="docutils align-center" id="id1">
+<caption><span class="caption-number">Table 13.1 </span><span class="caption-text">Bubble shapes at <img class="math" src="_images/math/428f45c13544955acca2ceb798d369dc44aaa06a.svg" alt="t=3" style="vertical-align: 0px"/></span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 100%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_images/explviscous.png"><img alt="log11" src="_images/explviscous.png" style="width: 300px;" /></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <span id="document-styleguide"></span><div class="section" id="style-guide">
@@ -2076,6 +2100,83 @@ instance)</p></li>
 
             <div class="clearer"></div>
           </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-intro">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-comm">2. Communication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-convdiff">3. Convection-diffusion equation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#implicit-solver">3.1. Implicit solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#explicit-solver">3.2. Explicit solver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-fluid">4. Navier-Stokes equations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#simple">4.1. SIMPLE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#projection">4.2. Projection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#boundary-conditions">4.3. Boundary conditions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-vofm">5. Multilayer VOF</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#connected-component-labeling">5.1. Connected-component labeling</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-embed">6. Embedded boundaries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#advection-solver">6.1. Advection solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#diffusion-solver">6.2. Diffusion solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#taylor-couette-flow">6.3. Taylor-Couette flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#hydrostatic">6.4. Hydrostatic</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-primlist">7. Geometric primitives</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-bclist">8. Boundary conditions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#code-blocks">8.1. Code blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#groups-of-primitives">8.2. Groups of primitives</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-output">9. Output</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-references">10. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-lib1/index">11. Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib1/ap-cawk">11.1. AWK for CSV files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib1/ap-format">11.2. Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib1/ap-hist">11.3. Histogram</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-lib3/index">12. Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/csv">12.1. CSV IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/h5">12.2. HDF5 IO wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/march">12.3. Marching cubes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/vof">12.4. VOF advection</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-log/index">13. Log</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-log/log">13.1. Surface tension as gradient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#particle-normal-displacement">13.2. Particle normal displacement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#march-native">13.3. <code class="docutils literal notranslate"><span class="pre">march=native</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#max-iter">13.4. <code class="docutils literal notranslate"><span class="pre">max_iter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#number-of-particles-and-strings">13.5. Number of particles and strings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#number-of-iterations-for-coalescence">13.6. Number of iterations for coalescence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#relaxation-parameters">13.7. Relaxation parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#reduced-usage-of-getcenter">13.8. Reduced usage of <code class="docutils literal notranslate"><span class="pre">GetCenter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#debug-linear-solver-with-convertlscompact">13.9. Debug linear solver with <code class="docutils literal notranslate"><span class="pre">ConvertLsCompact</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#registered-modules-in-ubuntu">13.10. Registered modules in Ubuntu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#vtk-merge-comparison-of-floats-with-tolerance">13.11. VTK merge, comparison of floats with tolerance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#explicit-part-of-viscous-stress">13.12. Explicit part of viscous stress</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-styleguide">14. Style guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#naming-conventions">14.1. Naming conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#toolbox-classes">14.2. Toolbox classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#comments">14.3. Comments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#units">14.4. Units</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-todo">15. TODO</a></li>
+</ul>
+
+        </div>
       </div>
       <div class="clearer"></div>
     </div>
@@ -2088,7 +2189,7 @@ instance)</p></li>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020 ETH Zurich.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.2.
     </div>
   </body>
 </html>
