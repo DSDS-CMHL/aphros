@@ -1,15 +1,15 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aphros documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <title>Aphros 0.1.2 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -20,8 +20,8 @@
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
-        <li class="nav-item nav-item-0"><a href="#">Aphros  documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Aphros  documentation</a></li> 
+        <li class="nav-item nav-item-0"><a href="#">Aphros 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Aphros 0.1.2 documentation</a></li> 
       </ul>
     </div>  
 
@@ -35,22 +35,21 @@
 <div class="toctree-wrapper compound">
 <span id="document-intro"></span><div class="section" id="introduction">
 <h2><span class="section-number">1. </span>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p><strong>Aphrós</strong> is a finite volume solver for incompressible multiphase flows with
+<p><strong>Aphros</strong> is a finite volume solver for incompressible multiphase flows with
 surface tension. Key features:</p>
 <ul class="simple">
 <li><p>implementation in C++14</p></li>
 <li><p>abstractions for mesh elements (cells, faces and nodes),
 range-based loops over them
 and the corresponding data fields (cell-, face- and node-based fields)</p></li>
-<li><p>convenient and fast development (no need to write x,y,z loops)
+<li><p>convenient and fast development (no need to write 3D loops)
 using only standard features of the language
 (without code generators or domain-specific languages)</p></li>
 <li><p>scalability to thousands of compute nodes using MPI/OpenMP
 thanks to the Cubism library for distributed computing on structured grids</p></li>
 <li><p>coroutines to enable encapsulation in the block-wise processing framework</p></li>
 <li><p>individual solvers can be used separately as regular classes or functions</p></li>
-<li><p>no Python bindings</p></li>
-<li><p>fluid solver based on SIMPLE or Chorin’s projections</p></li>
+<li><p>fluid solver based on SIMPLE or Bell-Colella-Glaz methods</p></li>
 <li><p>conservative split advection solver based on PLIC</p></li>
 <li><p>method of particles for curvature estimation that outperforms
 standard techniques at low resolutions
@@ -461,7 +460,7 @@ Value of <code class="docutils literal notranslate"><span class="pre">id</span><
 that can represent multiple interfaces in the same cell.
 This enables simulations of foams, suspensions,
 and other multiphase systems where bubbles and drops that do not coalesce.</p>
-<p>The split conservative advection scheme <a class="reference internal" href="index.html#weymouth2010" id="id1"><span>[weymouth2010]</span></a> operates on a volume
+<p>The split conservative advection scheme <span id="id1">Weymouth and Yue [<a class="reference internal" href="index.html#id2" title="Gabriel D Weymouth and Dick K-P Yue. Conservative volume-of-fluid method for free-surface simulations on cartesian-grids. Journal of Computational Physics, 229(8):2853–2865, 2010.">1</a>]</span> operates on a volume
 fraction field and uses the PLIC reconstruction to compute the fluxes.
 In three dimensions, one advection step is split into three sub-steps, or
 sweeps. To ensure conservation, a divergence term is added explicitly.
@@ -499,7 +498,7 @@ For example, selecting the values with color <em>qs=2</em> gives a conventional 
 <p>The following pseudocode implements the multilayer VOF method.
 One advection step is split in the spatial directions
 and in three dimensions consists of three substeps, or sweeps.</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">Step</span><span class="p">()</span> <span class="p">{</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">Step</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">for</span> <span class="p">(</span><span class="nl">d</span> <span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">})</span> <span class="p">{</span>
     <span class="p">{</span><span class="n">u</span><span class="p">,</span> <span class="n">q</span><span class="p">}</span> <span class="o">=</span> <span class="n">Sweep</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
     <span class="p">{</span><span class="n">n</span><span class="p">,</span> <span class="n">a</span><span class="p">}</span> <span class="o">=</span> <span class="n">Plic</span><span class="p">(</span><span class="n">u</span><span class="p">);</span>
@@ -511,7 +510,7 @@ and in three dimensions consists of three substeps, or sweeps.</p>
 <p>Given the PLIC reconstruction of the interface,
 one sweep computes fluxes, updates the volume fractions
 and propagates the colors to downwind cells</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">Sweep</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">Sweep</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// v: mixture flux</span>
   <span class="c1">// w: phase flux</span>
   <span class="c1">// qf: phase color from upwind cell</span>
@@ -550,7 +549,7 @@ and propagates the colors to downwind cells</p>
 </div>
 <p>Function <code class="docutils literal notranslate"><span class="pre">Plic()</span></code> builds the PLIC reconstruction in interfacial cells
 and returns normals <em>n</em> and plane constants <em>a</em>:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">Plic</span><span class="p">()</span> <span class="p">{</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">Plic</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">for</span> <span class="p">(</span><span class="nl">c</span> <span class="p">:</span> <span class="n">cells</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">for</span> <span class="p">(</span><span class="nl">l</span> <span class="p">:</span> <span class="n">layers</span><span class="p">)</span> <span class="p">{</span>
       <span class="n">uu</span> <span class="o">=</span> <span class="n">Stencil3</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">q</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">l</span><span class="p">));</span>
@@ -581,7 +580,7 @@ is given in <a class="reference external" href="https://github.com/cselab/aphros
 connected components.  The following function initializes the color field with
 unique values, then iteratively joins the colors from adjacent cells by taking
 the minimal color until equilibration.</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">Recolor</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">Recolor</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">q_new</span> <span class="o">=</span> <span class="n">InitUnique</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">q</span><span class="p">);</span>
 
   <span class="n">changed</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
@@ -609,7 +608,7 @@ the minimal color until equilibration.</p>
 <p>To reduce the number of iterations, function <code class="docutils literal notranslate"><span class="pre">RecolorCorners()</span></code>
 runs the same algorithm for corners from cubic subdomains.
 The colors propagate through the domain faster.</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">RecolorCorners</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">q_new</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">RecolorCorners</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">q_new</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// map: mapping from old color to new color</span>
   <span class="k">for</span> <span class="p">(</span><span class="nl">c</span> <span class="p">:</span> <span class="n">corners</span> <span class="n">of</span> <span class="n">subdomains</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">for</span> <span class="p">(</span><span class="nl">l</span> <span class="p">:</span> <span class="n">layers</span><span class="p">)</span> <span class="p">{</span>
@@ -1165,7 +1164,7 @@ Parameters:
 Parameters:
 <code class="docutils literal notranslate"><span class="pre">cx</span> <span class="pre">cy</span> <span class="pre">cz</span></code> (center), <code class="docutils literal notranslate"><span class="pre">nx</span> <span class="pre">ny</span> <span class="pre">nz</span></code> (normal), <code class="docutils literal notranslate"><span class="pre">r</span></code> (radius), <code class="docutils literal notranslate"><span class="pre">th</span></code> (thickness);</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">smooth_step</span></code></dt><dd><p>Smooth step <a class="reference internal" href="index.html#almgren1997" id="id1"><span>[almgren1997]</span></a>.
+<dt><code class="docutils literal notranslate"><span class="pre">smooth_step</span></code></dt><dd><p>Smooth step <span id="id1">Almgren <em>et al.</em> [<a class="reference internal" href="index.html#id3" title="Ann S Almgren, John B Bell, Phillip Colella, and Tyler Marthaler. A cartesian grid projection method for the incompressible euler equations in complex geometries. SIAM Journal on Scientific Computing, 18(5):1289–1309, 1997.">2</a>]</span>.
 Parameters:
 <code class="docutils literal notranslate"><span class="pre">cx</span> <span class="pre">cy</span> <span class="pre">cz</span></code> (center), <code class="docutils literal notranslate"><span class="pre">nx</span> <span class="pre">ny</span> <span class="pre">nz</span></code> (normal), <code class="docutils literal notranslate"><span class="pre">tx</span> <span class="pre">ty</span> <span class="pre">tz</span></code> (tangent),
 <code class="docutils literal notranslate"><span class="pre">ln</span></code> (size along normal), <code class="docutils literal notranslate"><span class="pre">lt</span></code> (size along tangent);</p>
@@ -1245,13 +1244,6 @@ volume fraction cut by an ellipsoid (only valid for primitive <code class="docut
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">int</span> <span class="pre">list_ls</span> <span class="pre">3</span></code></dt><dd><p>linear approximation with normal and plane constant
 computed from the level-set on mesh nodes, supports modifiers.</p>
-</dd>
-</dl>
-<dl class="citation">
-<dt class="label" id="almgren1997"><span class="brackets"><a class="fn-backref" href="#id1">almgren1997</a></span></dt>
-<dd><p>Almgren et al. A Cartesian Grid Projection Method for the
-Incompressible Euler Equations in Complex Geometries (1997)
-<a class="reference external" href="https://doi.org/10.1137/S1064827594273730">10.1137/S1064827594273730</a></p>
 </dd>
 </dl>
 </div>
@@ -1354,30 +1346,20 @@ and <code class="docutils literal notranslate"><span class="pre">condfluid</span
 </pre></div>
 </div>
 </div>
-<span id="document-references"></span><div class="section" id="references">
-<h2><span class="section-number">10. </span>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
-<dl class="citation">
-<dt class="label" id="weymouth2010"><span class="brackets">weymouth2010</span></dt>
-<dd><p>Weymouth, G.D. and Yue, D.K.P., 2010.
-Conservative volume-of-fluid method for free-surface simulations on cartesian-grids.
-<em>Journal of Computational Physics</em>, 229(8), pp.2853-2865.</p>
-</dd>
-</dl>
-</div>
 <span id="document-lib1/index"></span><div class="section" id="tools">
-<h2><span class="section-number">11. </span>Tools<a class="headerlink" href="#tools" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">10. </span>Tools<a class="headerlink" href="#tools" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <span id="document-lib1/ap-cawk"></span><div class="section" id="awk-for-csv-files">
-<h3><span class="section-number">11.1. </span>AWK for CSV files<a class="headerlink" href="#awk-for-csv-files" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">10.1. </span>AWK for CSV files<a class="headerlink" href="#awk-for-csv-files" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="synopsis">
-<h4><span class="section-number">11.1.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">10.1.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
 <p>ap.cawk [-v var=value] [‘prog’] [CSV ..]</p>
 </div>
 <div class="section" id="description">
-<h4><span class="section-number">11.1.2. </span>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">10.1.2. </span>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h4>
 </div>
 <div class="section" id="examples">
-<h4><span class="section-number">11.1.3. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">10.1.3. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cat example.csv
 x,y
 1,10
@@ -1396,13 +1378,13 @@ x,y
 </div>
 </div>
 <div class="section" id="source">
-<h4><span class="section-number">11.1.4. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">10.1.4. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
 <span class="problematic">deploy/scripts/cawk</span></div>
 </div>
 <span id="document-lib1/ap-format"></span><div class="section" id="format">
-<h3><span class="section-number">11.2. </span>Format<a class="headerlink" href="#format" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">10.2. </span>Format<a class="headerlink" href="#format" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="synopsis">
-<h4><span class="section-number">11.2.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">10.2.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
 <p>ap.format [-y]</p>
 <p>runs clang-format for all C/C++ files found recursively from current directory.</p>
 <dl class="option-list">
@@ -1412,43 +1394,43 @@ x,y
 </dl>
 </div>
 <div class="section" id="configuration">
-<h4><span class="section-number">11.2.2. </span>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">10.2.2. </span>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h4>
 <p>The configuration is based on Google code style with modifications.</p>
 <p><a class="reference external" href="https://github.com/cselab/aphros/blob/master/.clang-format">.clang-format</a></p>
 </div>
 <div class="section" id="source">
-<h4><span class="section-number">11.2.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">10.2.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
 <p><a class="reference external" href="https://github.com/cselab/aphros/blob/master/deploy/scripts/format">deploy/scripts/format</a></p>
 </div>
 </div>
 <span id="document-lib1/ap-hist"></span><div class="section" id="histogram">
-<h3><span class="section-number">11.3. </span>Histogram<a class="headerlink" href="#histogram" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">10.3. </span>Histogram<a class="headerlink" href="#histogram" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="synopsis">
-<h4><span class="section-number">11.3.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">10.3.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
 <p>ap.hist [–density|–cumulative] [–bins BINS] [–range L R]</p>
 <p>print histogram of STDIN as columns [center,density,left,right]</p>
 </div>
 <div class="section" id="examples">
-<h4><span class="section-number">11.3.2. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">10.3.2. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">seq</span> <span class="mi">10</span> <span class="o">|</span> <span class="n">ap</span><span class="o">.</span><span class="n">hist</span> <span class="o">--</span><span class="n">density</span>
 <span class="n">seq</span> <span class="mi">10</span> <span class="o">|</span> <span class="n">ap</span><span class="o">.</span><span class="n">hist</span> <span class="o">--</span><span class="n">cumulative</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="source">
-<h4><span class="section-number">11.3.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">10.3.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
 <p><a class="reference external" href="https://github.com/cselab/aphros/blob/master/deploy/scripts/hist">deploy/scripts/hist</a></p>
 </div>
 </div>
 </div>
 </div>
 <span id="document-lib3/index"></span><div class="section" id="library">
-<h2><span class="section-number">12. </span>Library<a class="headerlink" href="#library" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">11. </span>Library<a class="headerlink" href="#library" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <span id="document-lib3/csv"></span><div class="section" id="csv-io">
-<h3><span class="section-number">12.1. </span>CSV IO<a class="headerlink" href="#csv-io" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">11.1. </span>CSV IO<a class="headerlink" href="#csv-io" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="synopsis">
-<h4><span class="section-number">12.1.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.1.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
 <p>A library to read/write floating point data from CSV file</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#include &lt;csv.h&gt;</span>
 </pre></div>
@@ -1473,19 +1455,19 @@ x,y
 </div>
 </div>
 <div class="section" id="description">
-<h4><span class="section-number">12.1.2. </span>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.1.2. </span>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h4>
 </div>
 <div class="section" id="source">
-<h4><span class="section-number">12.1.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.1.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
 <span class="problematic">deploy/lib/csv</span></div>
 <div class="section" id="examples">
-<h4><span class="section-number">12.1.4. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.1.4. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
 </div>
 </div>
 <span id="document-lib3/h5"></span><div class="section" id="hdf5-io-wrapper">
-<h3><span class="section-number">12.2. </span>HDF5 IO wrapper<a class="headerlink" href="#hdf5-io-wrapper" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">11.2. </span>HDF5 IO wrapper<a class="headerlink" href="#hdf5-io-wrapper" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="synopsis">
-<h4><span class="section-number">12.2.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.2.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
 <p>A library to read/write scalar field on uniform grid.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#include &lt;h5.h&gt;</span>
 </pre></div>
@@ -1511,7 +1493,7 @@ x,y
 </div>
 </div>
 <div class="section" id="description">
-<h4><span class="section-number">12.2.2. </span>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.2.2. </span>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h4>
 <p>A field is stored as two files: hdf5 file contains data and xmf file
 contains information.</p>
 <p>h5_serial_hdf write scalar field of dimension size[3] to file path.h5.</p>
@@ -1544,11 +1526,11 @@ contains information.</p>
 </div>
 </div>
 <div class="section" id="source">
-<h4><span class="section-number">12.2.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.2.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
 <p><a class="reference external" href="https://github.com/cselab/aphros/blob/master/deploy/lib/h5">deploy/lib/h5</a></p>
 </div>
 <div class="section" id="examples">
-<h4><span class="section-number">12.2.4. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.2.4. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
 <p>Write a field in serial:</p>
 <div class="line-block">
 <div class="line"><a class="reference external" href="https://github.com/cselab/aphros/blob/master/examples/003_h5_serial_write/main.c">examples/003_h5_serial_write/main.c</a></div>
@@ -1560,32 +1542,32 @@ contains information.</p>
 </div>
 </div>
 <span id="document-lib3/march"></span><div class="section" id="marching-cubes">
-<h3><span class="section-number">12.3. </span>Marching cubes<a class="headerlink" href="#marching-cubes" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">11.3. </span>Marching cubes<a class="headerlink" href="#marching-cubes" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="synopsis">
-<h4><span class="section-number">12.3.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.3.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
 <p>Marching cubes.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#include &lt;march.h&gt;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;march.h&gt;</span><span class="cp"></span>
 
-<span class="n">static</span> <span class="n">double</span> <span class="n">MARCH_O</span><span class="p">[][</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<span class="k">static</span> <span class="kt">double</span> <span class="n">MARCH_O</span><span class="p">[][</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
   <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">},</span>
   <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">},</span>
 <span class="p">};</span>
-<span class="n">enum</span> <span class="p">{</span> <span class="n">MARCH_NTRI</span> <span class="o">=</span> <span class="mi">48</span> <span class="p">};</span>
-<span class="nb">int</span> <span class="n">march_cube</span><span class="p">(</span><span class="n">double</span> <span class="n">u</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="nb">int</span><span class="o">*</span> <span class="n">ntri</span><span class="p">,</span> <span class="n">double</span><span class="o">*</span> <span class="n">tri</span><span class="p">);</span>
-<span class="nb">int</span> <span class="n">march_cube_location</span><span class="p">(</span><span class="n">double</span> <span class="n">u</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="nb">int</span><span class="o">*</span> <span class="n">ntri</span><span class="p">,</span> <span class="n">double</span><span class="o">*</span> <span class="n">tri</span><span class="p">,</span> <span class="nb">int</span><span class="o">*</span> <span class="n">first</span><span class="p">,</span> <span class="nb">int</span><span class="o">*</span> <span class="n">second</span><span class="p">,</span> <span class="n">double</span><span class="o">*</span> <span class="n">offset</span><span class="p">);</span>
+<span class="k">enum</span> <span class="p">{</span> <span class="n">MARCH_NTRI</span> <span class="o">=</span> <span class="mi">48</span> <span class="p">};</span>
+<span class="kt">int</span> <span class="nf">march_cube</span><span class="p">(</span><span class="kt">double</span> <span class="n">u</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="kt">int</span><span class="o">*</span> <span class="n">ntri</span><span class="p">,</span> <span class="kt">double</span><span class="o">*</span> <span class="n">tri</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">march_cube_location</span><span class="p">(</span><span class="kt">double</span> <span class="n">u</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="kt">int</span><span class="o">*</span> <span class="n">ntri</span><span class="p">,</span> <span class="kt">double</span><span class="o">*</span> <span class="n">tri</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span> <span class="n">first</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span> <span class="n">second</span><span class="p">,</span> <span class="kt">double</span><span class="o">*</span> <span class="n">offset</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="description">
-<h4><span class="section-number">12.3.2. </span>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.3.2. </span>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h4>
 <p>Generates triangles of the isosurface for three-dimensional discrete
 field.</p>
 <p>march_cube generates triangles for one cell, u[8] are values of the
 field in the nodes. Returns ntri – the number of triangles, tri –
 vertices of the triangles in the form [x0 y0 z0 … xn yn zn].</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">double</span> <span class="n">cube</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">};</span>
-<span class="n">double</span> <span class="n">tri</span><span class="p">[</span><span class="mi">3</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">MARCH_NTRI</span><span class="p">];</span>
-<span class="nb">int</span> <span class="n">n</span><span class="p">;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">double</span> <span class="n">cube</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">-1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">};</span>
+<span class="kt">double</span> <span class="n">tri</span><span class="p">[</span><span class="mi">3</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">MARCH_NTRI</span><span class="p">];</span>
+<span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
 
 <span class="n">march_cube</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">n</span><span class="p">,</span> <span class="n">tri</span><span class="p">);</span>
 </pre></div>
@@ -1621,11 +1603,11 @@ relative distance from the node first[i].</p>
 </div>
 </div>
 <div class="section" id="source">
-<h4><span class="section-number">12.3.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.3.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
 <p><a class="reference external" href="https://github.com/cselab/aphros/blob/master/deploy/lib/march">deploy/lib/march</a></p>
 </div>
 <div class="section" id="examples">
-<h4><span class="section-number">12.3.4. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.3.4. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
 <p>Generate triangles for cube configurations given as arguments:</p>
 <div class="line-block">
 <div class="line"><a class="reference external" href="https://github.com/cselab/aphros/blob/master/examples/001_march_cell/main.c">examples/001_march_cell/main.c</a></div>
@@ -1637,16 +1619,20 @@ relative distance from the node first[i].</p>
 </div>
 </div>
 <span id="document-lib3/vof"></span><div class="section" id="vof-advection">
-<h3><span class="section-number">12.4. </span>VOF advection<a class="headerlink" href="#vof-advection" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">11.4. </span>VOF advection<a class="headerlink" href="#vof-advection" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="synopsis">
-<h4><span class="section-number">12.4.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.4.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
 <p>Volume-of-fluid advection solver with PLIC reconstruction.</p>
 </div>
 <div class="section" id="parameters">
-<h4><span class="section-number">12.4.2. </span>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">Par</span> <span class="p">{</span>
+<h4><span class="section-number">11.4.2. </span>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">VofPar</span> <span class="p">{</span>
+  <span class="k">using</span> <span class="n">Scal</span> <span class="o">=</span> <span class="k">typename</span> <span class="nc">M</span><span class="o">::</span><span class="n">Scal</span><span class="p">;</span>
+  <span class="k">using</span> <span class="n">Vect</span> <span class="o">=</span> <span class="k">typename</span> <span class="nc">M</span><span class="o">::</span><span class="n">Vect</span><span class="p">;</span>
+
   <span class="kt">size_t</span> <span class="n">dim</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span> <span class="c1">// dimension (dim=2 assumes zero velocity in z)</span>
   <span class="n">Scal</span> <span class="n">clipth</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">;</span> <span class="c1">// vf clipping threshold</span>
+  <span class="n">Scal</span> <span class="n">filterth</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// orphan filtering threshold</span>
   <span class="kt">bool</span> <span class="n">recolor</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> <span class="c1">// run connected component labeling on every step</span>
   <span class="kt">bool</span> <span class="n">recolor_unionfind</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> <span class="c1">// use union-find algorithm</span>
   <span class="kt">bool</span> <span class="n">recolor_reduce</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> <span class="c1">// reduce set of colors to integers</span>
@@ -1659,12 +1645,13 @@ relative distance from the node first[i].</p>
   <span class="kt">size_t</span> <span class="n">layers</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
   <span class="n">Scal</span> <span class="n">avgnorm0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// original normal with sum(u)&lt;avgnorm0</span>
   <span class="n">Scal</span> <span class="n">avgnorm1</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// overriden normal with sum(u)&gt;=acgnorm1</span>
-  <span class="n">Scal</span> <span class="n">coalth</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">;</span>
+  <span class="n">Scal</span> <span class="n">coalth</span> <span class="o">=</span> <span class="mf">1e10</span><span class="p">;</span>
   <span class="kt">int</span> <span class="n">verb</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
   <span class="kt">bool</span> <span class="n">bcc_reflectpoly</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> <span class="c1">// reflection for DumpPolyMarch</span>
   <span class="n">Scal</span> <span class="n">dumppolymarch_fill</span> <span class="o">=</span> <span class="mi">-1</span><span class="p">;</span> <span class="c1">// fill cells outside</span>
-  <span class="kt">bool</span> <span class="n">vtkbin</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="n">vtkbin</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
   <span class="kt">bool</span> <span class="n">vtkmerge</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="n">vtkpoly</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> <span class="c1">// dump vtk polygins instead of lines</span>
   <span class="n">Scal</span> <span class="n">vtkiso</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
   <span class="k">enum</span> <span class="k">class</span> <span class="nc">Scheme</span> <span class="p">{</span> <span class="n">plain</span><span class="p">,</span> <span class="n">aulisa</span><span class="p">,</span> <span class="n">weymouth</span> <span class="p">};</span>
   <span class="n">Scheme</span> <span class="n">scheme</span> <span class="o">=</span> <span class="n">Scheme</span><span class="o">::</span><span class="n">weymouth</span><span class="p">;</span>
@@ -1675,12 +1662,15 @@ relative distance from the node first[i].</p>
   <span class="c1">// after the advection step.</span>
   <span class="c1">// If embedded boundaries are enabled, supports only periodic condtitions.</span>
   <span class="kt">bool</span> <span class="n">extrapolate_boundaries</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="n">Labeling</span><span class="o">&lt;</span><span class="n">M</span><span class="o">&gt;*</span> <span class="n">labeling</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span> <span class="c1">// Pointer to implementation of</span>
+                                   <span class="c1">// connected component labeling.</span>
+                                   <span class="c1">// Defaults to Recolor().</span>
 <span class="p">};</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="source">
-<h4><span class="section-number">12.4.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.4.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
 <div class="line-block">
 <div class="line"><a class="reference external" href="https://github.com/cselab/aphros/blob/master/src/solver/vof.h">src/solver/vof.h</a></div>
 <div class="line"><a class="reference external" href="https://github.com/cselab/aphros/blob/master/src/solver/vof.cpp">src/solver/vof.cpp</a></div>
@@ -1688,7 +1678,7 @@ relative distance from the node first[i].</p>
 </div>
 </div>
 <div class="section" id="example">
-<h4><span class="section-number">12.4.4. </span>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.4.4. </span>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
 <p><a class="reference external" href="https://github.com/cselab/aphros/blob/master/examples/100_advection/main.cpp">examples/100_advection/main.cpp</a></p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Created by Petr Karnakov on 24.12.2019</span>
 <span class="c1">// Copyright 2019 ETH Zurich</span>
@@ -1789,10 +1779,10 @@ relative distance from the node first[i].</p>
 </div>
 </div>
 <span id="document-log/index"></span><div class="section" id="log">
-<h2><span class="section-number">13. </span>Log<a class="headerlink" href="#log" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">12. </span>Log<a class="headerlink" href="#log" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <span id="document-log/log"></span><div class="section" id="surface-tension-as-gradient">
-<h3><span class="section-number">13.1. </span>Surface tension as gradient<a class="headerlink" href="#surface-tension-as-gradient" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">12.1. </span>Surface tension as gradient<a class="headerlink" href="#surface-tension-as-gradient" title="Permalink to this headline">¶</a></h3>
 <p>2018-08-30 22:08:47</p>
 <p><strong>Goal</strong>: zero integral of force</p>
 <p><strong>What</strong>: surface tension as <img class="math" src="_images/math/b0b3a9ce06f121dd73cc41968b3854443510f587.svg" alt="\nabla (\kappa \alpha)" style="vertical-align: -5px"/> on faces,
@@ -1809,7 +1799,7 @@ curvature on face if both cells contain interface</p></li>
 </ul>
 </div>
 <div class="section" id="particle-normal-displacement">
-<h3><span class="section-number">13.2. </span>Particle normal displacement<a class="headerlink" href="#particle-normal-displacement" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">12.2. </span>Particle normal displacement<a class="headerlink" href="#particle-normal-displacement" title="Permalink to this headline">¶</a></h3>
 <p>2018-09-02 09:41:49</p>
 <p><strong>Goal</strong>: reduce spurious flow and deformation for single drop
 equilibrium</p>
@@ -1824,7 +1814,7 @@ to stronger coupling or penalization of deformed interfaces</p>
 </ul>
 </div>
 <div class="section" id="march-native">
-<h3><span class="section-number">13.3. </span><code class="docutils literal notranslate"><span class="pre">march=native</span></code><a class="headerlink" href="#march-native" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">12.3. </span><code class="docutils literal notranslate"><span class="pre">march=native</span></code><a class="headerlink" href="#march-native" title="Permalink to this headline">¶</a></h3>
 <p>2018-09-09 11:59:47</p>
 <p><strong>Goal</strong>: use automatic vectorization and specific optimizations</p>
 <p><strong>What</strong>: add <code class="docutils literal notranslate"><span class="pre">-march=native</span></code> to <code class="docutils literal notranslate"><span class="pre">CMAKE_C_FLAGS</span></code> and
@@ -1838,7 +1828,7 @@ to stronger coupling or penalization of deformed interfaces</p>
 </ul>
 </div>
 <div class="section" id="max-iter">
-<h3><span class="section-number">13.4. </span><code class="docutils literal notranslate"><span class="pre">max_iter</span></code><a class="headerlink" href="#max-iter" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">12.4. </span><code class="docutils literal notranslate"><span class="pre">max_iter</span></code><a class="headerlink" href="#max-iter" title="Permalink to this headline">¶</a></h3>
 <p>2018-09-12 14:03:27</p>
 <p><strong>Goal</strong>: choose optimal number of iterations <code class="docutils literal notranslate"><span class="pre">max_iter</span></code></p>
 <p><strong>What</strong>: Taylor-Green with bubbles (<code class="docutils literal notranslate"><span class="pre">sim06</span></code>) with
@@ -1857,7 +1847,7 @@ to stronger coupling or penalization of deformed interfaces</p>
 </ul>
 </div>
 <div class="section" id="number-of-particles-and-strings">
-<h3><span class="section-number">13.5. </span>Number of particles and strings<a class="headerlink" href="#number-of-particles-and-strings" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">12.5. </span>Number of particles and strings<a class="headerlink" href="#number-of-particles-and-strings" title="Permalink to this headline">¶</a></h3>
 <p><strong>Goal</strong>: check the influence of the <code class="docutils literal notranslate"><span class="pre">part_np</span></code> and <code class="docutils literal notranslate"><span class="pre">part_ns</span></code> in
 curvature estimator</p>
 <p><strong>What</strong>: Free-field coalescence of bubbles based on <code class="docutils literal notranslate"><span class="pre">sim04_univel</span></code></p>
@@ -1873,7 +1863,7 @@ curvature estimator</p>
 </ul>
 </div>
 <div class="section" id="number-of-iterations-for-coalescence">
-<h3><span class="section-number">13.6. </span>Number of iterations for coalescence<a class="headerlink" href="#number-of-iterations-for-coalescence" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">12.6. </span>Number of iterations for coalescence<a class="headerlink" href="#number-of-iterations-for-coalescence" title="Permalink to this headline">¶</a></h3>
 <p><strong>Goal</strong>: check the influence of the <code class="docutils literal notranslate"><span class="pre">min_iter</span></code> and <code class="docutils literal notranslate"><span class="pre">tol</span></code> on bubble
 coalescence</p>
 <p><strong>What</strong>: Free-field coalescence of bubbles based on
@@ -1890,7 +1880,7 @@ coalescence</p>
 </ul>
 </div>
 <div class="section" id="relaxation-parameters">
-<h3><span class="section-number">13.7. </span>Relaxation parameters<a class="headerlink" href="#relaxation-parameters" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">12.7. </span>Relaxation parameters<a class="headerlink" href="#relaxation-parameters" title="Permalink to this headline">¶</a></h3>
 <p>2019-03-21 22:48:56</p>
 <p><strong>Goal</strong>: check the influence of <code class="docutils literal notranslate"><span class="pre">vrelax</span></code> and <code class="docutils literal notranslate"><span class="pre">prelax</span></code> on bubble
 coalescence</p>
@@ -1913,7 +1903,7 @@ detachment</p></li>
 </ul>
 </div>
 <div class="section" id="reduced-usage-of-getcenter">
-<h3><span class="section-number">13.8. </span>Reduced usage of <code class="docutils literal notranslate"><span class="pre">GetCenter</span></code><a class="headerlink" href="#reduced-usage-of-getcenter" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">12.8. </span>Reduced usage of <code class="docutils literal notranslate"><span class="pre">GetCenter</span></code><a class="headerlink" href="#reduced-usage-of-getcenter" title="Permalink to this headline">¶</a></h3>
 <p>2019-04-27 01:19:03</p>
 <p><strong>Goal</strong>: Performance improvement.</p>
 <p><strong>What</strong>: Reduced usage of <code class="docutils literal notranslate"><span class="pre">GetCenter</span></code> and <code class="docutils literal notranslate"><span class="pre">GetVectToCell</span></code>. Test of
@@ -1927,7 +1917,7 @@ the Taylor-Green vortex with bubbles.</p>
 </ul>
 </div>
 <div class="section" id="debug-linear-solver-with-convertlscompact">
-<h3><span class="section-number">13.9. </span>Debug linear solver with <code class="docutils literal notranslate"><span class="pre">ConvertLsCompact</span></code><a class="headerlink" href="#debug-linear-solver-with-convertlscompact" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">12.9. </span>Debug linear solver with <code class="docutils literal notranslate"><span class="pre">ConvertLsCompact</span></code><a class="headerlink" href="#debug-linear-solver-with-convertlscompact" title="Permalink to this headline">¶</a></h3>
 <p>2019-08-15 10:04:39</p>
 <p><strong>Goal</strong>: Fix <code class="docutils literal notranslate"><span class="pre">sim12_ringgauss</span></code> after reimplementing <code class="docutils literal notranslate"><span class="pre">simple.ipp</span></code>
 with <code class="docutils literal notranslate"><span class="pre">ConvertLsCompact</span></code> in <code class="docutils literal notranslate"><span class="pre">48fa3cf0</span></code>. Iterations for pressure
@@ -1952,14 +1942,14 @@ leads to the wrong order of coefficients.</p>
 </ul>
 </div>
 <div class="section" id="registered-modules-in-ubuntu">
-<h3><span class="section-number">13.10. </span>Registered modules in Ubuntu<a class="headerlink" href="#registered-modules-in-ubuntu" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">12.10. </span>Registered modules in Ubuntu<a class="headerlink" href="#registered-modules-in-ubuntu" title="Permalink to this headline">¶</a></h3>
 <p>2020-06-03 11:34:54</p>
 <p>Ubuntu has <code class="docutils literal notranslate"><span class="pre">--as-needed</span></code> by default (seen from <code class="docutils literal notranslate"><span class="pre">gcc</span> <span class="pre">-dumpspecs</span></code>)
 which makes the linker ignore unused libraries
 and, in particular, the implementations of modules (e.g. <code class="docutils literal notranslate"><span class="pre">init_contang.so</span></code>).</p>
 </div>
 <div class="section" id="vtk-merge-comparison-of-floats-with-tolerance">
-<h3><span class="section-number">13.11. </span>VTK merge, comparison of floats with tolerance<a class="headerlink" href="#vtk-merge-comparison-of-floats-with-tolerance" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">12.11. </span>VTK merge, comparison of floats with tolerance<a class="headerlink" href="#vtk-merge-comparison-of-floats-with-tolerance" title="Permalink to this headline">¶</a></h3>
 <p>2020-06-13 21:56:35</p>
 <p><code class="docutils literal notranslate"><span class="pre">ConvertMerge</span></code> in <code class="docutils literal notranslate"><span class="pre">dump/vtk.h</span></code> mapped each <code class="docutils literal notranslate"><span class="pre">Vect</span></code> to a hash
 and used the hash to merge closely located points together
@@ -1981,7 +1971,7 @@ size <code class="docutils literal notranslate"><span class="pre">tol</span></co
 <a class="reference internal image-reference" href="_images/vtkmerge.svg"><img alt="_images/vtkmerge.svg" class="align-center" src="_images/vtkmerge.svg" width="300" /></a>
 </div>
 <div class="section" id="explicit-part-of-viscous-stress">
-<h3><span class="section-number">13.12. </span>Explicit part of viscous stress<a class="headerlink" href="#explicit-part-of-viscous-stress" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">12.12. </span>Explicit part of viscous stress<a class="headerlink" href="#explicit-part-of-viscous-stress" title="Permalink to this headline">¶</a></h3>
 <p>2021-06-11 15:32:27</p>
 <p>The viscous stress tensor has the form <img class="math" src="_images/math/1b6a3ce382aa40ed3b45a00b4c8d5a0cf8408dec.svg" alt="\mu(\nabla\mathbf{u} +\nabla\mathbf{u}^T)" style="vertical-align: -5px"/>.
 Parameter <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">explviscous</span></code> controls whether the second term is included in
@@ -1992,7 +1982,7 @@ This omitted term <img class="math" src="_images/math/9b500f1188530918bbf853f4c5
 (based on <a class="reference external" href="http://basilisk.fr/src/test/rising.c">http://basilisk.fr/src/test/rising.c</a>) shows a small difference.
 See full example in <a class="reference external" href="https://github.com/cselab/aphros/blob/master/examples/208_rising">examples/208_rising</a>.</p>
 <table class="docutils align-center" id="id1">
-<caption><span class="caption-number">Table 13.1 </span><span class="caption-text">Bubble shapes at <img class="math" src="_images/math/428f45c13544955acca2ceb798d369dc44aaa06a.svg" alt="t=3" style="vertical-align: 0px"/></span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-number">Table 12.1 </span><span class="caption-text">Bubble shapes at <img class="math" src="_images/math/428f45c13544955acca2ceb798d369dc44aaa06a.svg" alt="t=3" style="vertical-align: 0px"/></span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 100%" />
 </colgroup>
@@ -2004,97 +1994,55 @@ See full example in <a class="reference external" href="https://github.com/csela
 </div>
 </div>
 </div>
-<span id="document-styleguide"></span><div class="section" id="style-guide">
-<h2><span class="section-number">14. </span>Style guide<a class="headerlink" href="#style-guide" title="Permalink to this headline">¶</a></h2>
+<span id="document-styleguide"></span><div class="section" id="contributing">
+<h2><span class="section-number">13. </span>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="style-guide">
+<h3><span class="section-number">13.1. </span>Style guide<a class="headerlink" href="#style-guide" title="Permalink to this headline">¶</a></h3>
 <p>Use <a class="reference external" href="https://google.github.io/styleguide/cppguide.html">Google C++ Style Guide</a>.</p>
-<div class="section" id="naming-conventions">
-<h3><span class="section-number">14.1. </span>Naming conventions<a class="headerlink" href="#naming-conventions" title="Permalink to this headline">¶</a></h3>
+<p>Loop indices:</p>
 <ul class="simple">
-<li><p>Variable:</p>
-<ul>
-<li><p>lower case with underscores</p></li>
-<li><p>single letter when possible</p></li>
-<li><p>if first letter, put that word in comment: n // name</p></li>
-<li><p>if another letter, put that word with letter in […]: a // n[a]me</p></li>
-<li><p>up to 4 letters if possible</p></li>
-<li><p>private variables end with underscore: <code class="docutils literal notranslate"><span class="pre">a_</span></code>; exceptions: m
-(Mesh), var (Vars)</p></li>
-</ul>
-</li>
-<li><p>Template argument:</p>
-<ul>
-<li><p>CamelCase for types and lower case for values</p></li>
-<li><p>if alias needed, ends with underscore: <code class="docutils literal notranslate"><span class="pre">Mesh_</span></code></p></li>
-<li><p>else one letter</p></li>
-</ul>
-</li>
-<li><p>Filename:</p>
-<ul>
-<li><p>lower case, extensions h and cpp</p></li>
-</ul>
-</li>
-<li><p>Class</p>
-<ul>
-<li><p>…</p></li>
-</ul>
-</li>
-<li><p>No names starting with underscore, reserved</p></li>
-<li><p>For indices: <code class="docutils literal notranslate"><span class="pre">i</span></code> - generic <code class="docutils literal notranslate"><span class="pre">c</span></code> - IdxCell <code class="docutils literal notranslate"><span class="pre">f</span></code> - IdxFace <code class="docutils literal notranslate"><span class="pre">w</span></code> -
-MIdx <code class="docutils literal notranslate"><span class="pre">d</span></code> - direction <code class="docutils literal notranslate"><span class="pre">d</span></code> - index 0..dim</p></li>
-<li><p>Other: <code class="docutils literal notranslate"><span class="pre">u</span></code> - generic field <code class="docutils literal notranslate"><span class="pre">q</span></code> - neighbour cell id <code class="docutils literal notranslate"><span class="pre">o</span></code> - other</p></li>
-<li><p>Treat pointers same as values</p></li>
-</ul>
-</div>
-<div class="section" id="toolbox-classes">
-<h3><span class="section-number">14.2. </span>Toolbox classes<a class="headerlink" href="#toolbox-classes" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p>combines multiple templated functions to avoid repeating template
-parameters</p></li>
-<li><p>acts as namespace</p></li>
-<li><p>contains only static functions</p></li>
-</ul>
-</div>
-<div class="section" id="comments">
-<h3><span class="section-number">14.3. </span>Comments<a class="headerlink" href="#comments" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p>capitalized descriptive for a class or function (e.g. Creates
-instance)</p></li>
-<li><p>capitalized imperative for expressions in implementation (e.g. Create
-instance)</p></li>
-<li><p>non-capitalized for declarations (e.g. buffer index)</p></li>
-</ul>
-</div>
-<div class="section" id="units">
-<h3><span class="section-number">14.4. </span>Units<a class="headerlink" href="#units" title="Permalink to this headline">¶</a></h3>
-<p>Example: <code class="docutils literal notranslate"><span class="pre">Scal</span> <span class="pre">s;</span> <span class="pre">//</span> <span class="pre">source</span> <span class="pre">[density/time]</span></code></p>
-<ul class="simple">
-<li><p>length</p></li>
-<li><p>time</p></li>
-<li><p>mass</p></li>
-<li><p>velocity (length/time)</p></li>
-<li><p>area (length^2)</p></li>
-<li><p>volume (length^3)</p></li>
-<li><p>density (mass/volume)</p></li>
-<li><p>value (user defined, e.g. 1 for concentration)</p></li>
-</ul>
-<div class="section" id="ordering">
-<h4><span class="section-number">14.4.1. </span>Ordering<a class="headerlink" href="#ordering" title="Permalink to this headline">¶</a></h4>
-<ul class="simple">
-<li><p>parent <code class="docutils literal notranslate"><span class="pre">P</span></code></p></li>
-<li><p>kernel <code class="docutils literal notranslate"><span class="pre">K</span></code></p></li>
-<li><p>mesh <code class="docutils literal notranslate"><span class="pre">M</span></code></p></li>
-<li><p>constructor parameters <code class="docutils literal notranslate"><span class="pre">Par</span></code></p></li>
-<li><p>dimension <code class="docutils literal notranslate"><span class="pre">dim</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">i</span></code> - generic</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">c</span></code> - IdxCell</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">f</span></code> - IdxFace</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">w</span></code> - MIdx</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">d</span></code> - direction</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">d</span></code> - index <code class="docutils literal notranslate"><span class="pre">0..dim-1</span></code></p></li>
 </ul>
 </div>
 </div>
+<span id="document-references"></span><div class="section" id="bibliography">
+<h2><span class="section-number">14. </span>Bibliography<a class="headerlink" href="#bibliography" title="Permalink to this headline">¶</a></h2>
 </div>
-<span id="document-todo"></span><div class="section" id="todo">
-<span id="s-todo"></span><h2><span class="section-number">15. </span>TODO<a class="headerlink" href="#todo" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p>library of examples with runtime below 1 min</p></li>
-</ul>
-</div>
+<p id="id1"><dl class="citation">
+<dt class="label" id="id2"><span class="brackets">1</span></dt>
+<dd><p>Gabriel D Weymouth and Dick K-P Yue. Conservative volume-of-fluid method for free-surface simulations on cartesian-grids. <em>Journal of Computational Physics</em>, 229(8):2853–2865, 2010.</p>
+</dd>
+<dt class="label" id="id3"><span class="brackets">2</span></dt>
+<dd><p>Ann S Almgren, John B Bell, Phillip Colella, and Tyler Marthaler. A cartesian grid projection method for the incompressible euler equations in complex geometries. <em>SIAM Journal on Scientific Computing</em>, 18(5):1289–1309, 1997.</p>
+</dd>
+<dt class="label" id="id4"><span class="brackets">3</span></dt>
+<dd><p>S Mohammad H Hashemi, Petr Karnakov, Pooria Hadikhani, Enrico Chinello, Sergey Litvinov, Christophe Moser, Petros Koumoutsakos, and Demetri Psaltis. A versatile and membrane-less electrochemical reactor for the electrolysis of water and brine. <em>Energy &amp; Environmental Science</em>, 12(5):1592–1604, 2019.</p>
+</dd>
+<dt class="label" id="id5"><span class="brackets">4</span></dt>
+<dd><p>Petr Karnakov, Fabian Wermelinger, Michail Chatzimanolakis, Sergey Litvinov, and Petros Koumoutsakos. A high performance computing framework for multiphase, turbulent flows on structured grids. In <em>Proceedings of the Platform for Advanced Scientific Computing Conference</em>, 1–9. 2019.</p>
+</dd>
+<dt class="label" id="id6"><span class="brackets">5</span></dt>
+<dd><p>Petr Karnakov, Sergey Litvinov, and Petros Koumoutsakos. A hybrid particle volume-of-fluid method for curvature estimation in multiphase flows. <em>International Journal of Multiphase Flow</em>, 125:103209, 2020.</p>
+</dd>
+<dt class="label" id="id7"><span class="brackets">6</span></dt>
+<dd><p>Zhong Yi Wan, Petr Karnakov, Petros Koumoutsakos, and Themistoklis P Sapsis. Bubbles in turbulent flows: data-driven, kinematic models with history terms. <em>International Journal of Multiphase Flow</em>, 129:103286, 2020.</p>
+</dd>
+<dt class="label" id="id8"><span class="brackets">7</span></dt>
+<dd><p>Petr Karnakov, Sergey Litvinov, Jean M Favre, and Petros Koumoutsakos. Breaking waves: to foam or not to foam? <em>Physical Review Fluids</em>, 5(11):110503, 2020.</p>
+</dd>
+<dt class="label" id="id9"><span class="brackets">8</span></dt>
+<dd><p>Petr Karnakov, Fabian Wermelinger, Sergey Litvinov, and Petros Koumoutsakos. Aphros: high performance software for multiphase flows with large scale bubble and drop clusters. In <em>Proceedings of the Platform for Advanced Scientific Computing Conference</em>, 1–10. 2020.</p>
+</dd>
+<dt class="label" id="id10"><span class="brackets">9</span></dt>
+<dd><p>Petr Karnakov, Sergey Litvinov, and Petros Koumoutsakos. Computing foaming flows across scales: from breaking waves to microfluidics. <em>arXiv preprint arXiv:2103.01513</em>, 2021.</p>
+</dd>
+</dl>
+</p>
 </div>
 </div>
 
@@ -2138,43 +2086,39 @@ instance)</p></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="index.html#document-output">9. Output</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-references">10. References</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-lib1/index">11. Tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib1/ap-cawk">11.1. AWK for CSV files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib1/ap-format">11.2. Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib1/ap-hist">11.3. Histogram</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-lib1/index">10. Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib1/ap-cawk">10.1. AWK for CSV files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib1/ap-format">10.2. Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib1/ap-hist">10.3. Histogram</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-lib3/index">12. Library</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/csv">12.1. CSV IO</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/h5">12.2. HDF5 IO wrapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/march">12.3. Marching cubes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/vof">12.4. VOF advection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-lib3/index">11. Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/csv">11.1. CSV IO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/h5">11.2. HDF5 IO wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/march">11.3. Marching cubes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/vof">11.4. VOF advection</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-log/index">13. Log</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-log/log">13.1. Surface tension as gradient</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#particle-normal-displacement">13.2. Particle normal displacement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#march-native">13.3. <code class="docutils literal notranslate"><span class="pre">march=native</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#max-iter">13.4. <code class="docutils literal notranslate"><span class="pre">max_iter</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#number-of-particles-and-strings">13.5. Number of particles and strings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#number-of-iterations-for-coalescence">13.6. Number of iterations for coalescence</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#relaxation-parameters">13.7. Relaxation parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#reduced-usage-of-getcenter">13.8. Reduced usage of <code class="docutils literal notranslate"><span class="pre">GetCenter</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#debug-linear-solver-with-convertlscompact">13.9. Debug linear solver with <code class="docutils literal notranslate"><span class="pre">ConvertLsCompact</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#registered-modules-in-ubuntu">13.10. Registered modules in Ubuntu</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#vtk-merge-comparison-of-floats-with-tolerance">13.11. VTK merge, comparison of floats with tolerance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#explicit-part-of-viscous-stress">13.12. Explicit part of viscous stress</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-log/index">12. Log</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#document-log/log">12.1. Surface tension as gradient</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#particle-normal-displacement">12.2. Particle normal displacement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#march-native">12.3. <code class="docutils literal notranslate"><span class="pre">march=native</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#max-iter">12.4. <code class="docutils literal notranslate"><span class="pre">max_iter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#number-of-particles-and-strings">12.5. Number of particles and strings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#number-of-iterations-for-coalescence">12.6. Number of iterations for coalescence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#relaxation-parameters">12.7. Relaxation parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#reduced-usage-of-getcenter">12.8. Reduced usage of <code class="docutils literal notranslate"><span class="pre">GetCenter</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#debug-linear-solver-with-convertlscompact">12.9. Debug linear solver with <code class="docutils literal notranslate"><span class="pre">ConvertLsCompact</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#registered-modules-in-ubuntu">12.10. Registered modules in Ubuntu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#vtk-merge-comparison-of-floats-with-tolerance">12.11. VTK merge, comparison of floats with tolerance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#explicit-part-of-viscous-stress">12.12. Explicit part of viscous stress</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-styleguide">14. Style guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="index.html#naming-conventions">14.1. Naming conventions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#toolbox-classes">14.2. Toolbox classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#comments">14.3. Comments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#units">14.4. Units</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-styleguide">13. Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html#style-guide">13.1. Style guide</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-todo">15. TODO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html#document-references">14. Bibliography</a></li>
 </ul>
 
         </div>
@@ -2184,13 +2128,13 @@ instance)</p></li>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
-        <li class="nav-item nav-item-0"><a href="#">Aphros  documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Aphros  documentation</a></li> 
+        <li class="nav-item nav-item-0"><a href="#">Aphros 0.1.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Aphros 0.1.2 documentation</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2020 ETH Zurich.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.2.
+        &#169; Copyright 2021, ETH Zurich.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
     </div>
   </body>
 </html>
