@@ -1,35 +1,17 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aphros 0.1.2 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
-    
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="nav-item nav-item-0"><a href="#">Aphros 0.1.2 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Aphros 0.1.2 documentation</a></li> 
-      </ul>
-    </div>  
+    <link rel="stylesheet" type="text/css" href="_static/basic.css" />
+  </head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body>
+  
   <div class="section" id="aphros">
 <h1>Aphros<a class="headerlink" href="#aphros" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
@@ -1428,168 +1410,14 @@ x,y
 <span id="document-lib3/index"></span><div class="section" id="library">
 <h2><span class="section-number">11. </span>Library<a class="headerlink" href="#library" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
-<span id="document-lib3/h5"></span><div class="section" id="hdf5-io-wrapper">
-<h3><span class="section-number">11.1. </span>HDF5 IO wrapper<a class="headerlink" href="#hdf5-io-wrapper" title="Permalink to this headline">¶</a></h3>
+<span id="document-lib3/vof"></span><div class="section" id="vof-advection">
+<h3><span class="section-number">11.1. </span>VOF advection<a class="headerlink" href="#vof-advection" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="synopsis">
 <h4><span class="section-number">11.1.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
-<p>A library to read/write scalar field on uniform grid.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#include &lt;h5.h&gt;</span>
-</pre></div>
-</div>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">h5_hdf</span><span class="p">(</span>
-    <span class="n">MPI_Comm</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">path</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">size</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">start</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-    <span class="k">const</span> <span class="kt">int</span> <span class="n">extent</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="k">const</span> <span class="kt">double</span><span class="o">*</span><span class="p">);</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#include &lt;h5serial.h&gt;</span>
-</pre></div>
-</div>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">h5_xmf</span><span class="p">(</span>
-    <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">path</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">name</span><span class="p">,</span> <span class="k">const</span> <span class="kt">double</span> <span class="n">origin</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="kt">double</span> <span class="n">spacing</span><span class="p">,</span>
-    <span class="k">const</span> <span class="kt">int</span> <span class="n">size</span><span class="p">[</span><span class="mi">3</span><span class="p">]);</span>
-<span class="kt">int</span> <span class="nf">h5_silence</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
-<span class="kt">int</span> <span class="nf">h5_serial_hdf</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">path</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">size</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="k">const</span> <span class="kt">double</span><span class="o">*</span> <span class="n">data</span><span class="p">);</span>
-<span class="kt">int</span> <span class="nf">h5_read_hdf</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">path</span><span class="p">,</span> <span class="cm">/**/</span> <span class="kt">int</span> <span class="n">size</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="kt">double</span><span class="o">**</span><span class="p">);</span>
-<span class="kt">int</span> <span class="nf">h5_read_xmf</span><span class="p">(</span>
-    <span class="k">const</span> <span class="kt">char</span><span class="o">*</span><span class="p">,</span> <span class="cm">/**/</span> <span class="kt">char</span><span class="o">*</span> <span class="n">name</span><span class="p">,</span> <span class="kt">double</span> <span class="n">origin</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="kt">double</span> <span class="n">spacing</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
-    <span class="kt">int</span> <span class="n">size</span><span class="p">[</span><span class="mi">3</span><span class="p">]);</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="description">
-<h4><span class="section-number">11.1.2. </span>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h4>
-<p>A field is stored as two files: hdf5 file contains data and xmf file
-contains information.</p>
-<p>h5_serial_hdf write scalar field of dimension size[3] to file path.h5.</p>
-<p>h5_hdf write path.h5 using MPI.</p>
-<p>h5_xmf writes xmf file.</p>
-<p>h5_read_hdf reads scalar field from path.h5.</p>
-<p>h5_read_xmf reads information about a field from path.xmf.</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Created by Sergey Litvinov on 24.12.2019</span>
-<span class="c1">// Copyright 2019 ETH Zurich</span>
-
-<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;h5serial.h&gt;</span><span class="cp"></span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">enum</span> <span class="p">{</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span> <span class="p">};</span>
-  <span class="kt">char</span> <span class="n">name</span><span class="p">[</span><span class="mi">999</span><span class="p">];</span>
-  <span class="kt">double</span> <span class="n">ori</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">spa</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">siz</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">h5_read_xmf</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="p">,</span> <span class="n">ori</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">spa</span><span class="p">,</span> <span class="n">siz</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;fail to read &#39;%s&#39;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-    <span class="n">exit</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;name: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;ori: %g %g %g</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">ori</span><span class="p">[</span><span class="n">X</span><span class="p">],</span> <span class="n">ori</span><span class="p">[</span><span class="n">Y</span><span class="p">],</span> <span class="n">ori</span><span class="p">[</span><span class="n">Z</span><span class="p">]);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;spa: %g</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">spa</span><span class="p">);</span>
-  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;siz: %d %d %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">siz</span><span class="p">[</span><span class="n">X</span><span class="p">],</span> <span class="n">siz</span><span class="p">[</span><span class="n">Y</span><span class="p">],</span> <span class="n">siz</span><span class="p">[</span><span class="n">Z</span><span class="p">]);</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="source">
-<h4><span class="section-number">11.1.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
-<p><a class="reference external" href="https://github.com/cselab/aphros/blob/master/deploy/lib/h5">deploy/lib/h5</a></p>
-</div>
-<div class="section" id="examples">
-<h4><span class="section-number">11.1.4. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
-<p>Write a field in serial:</p>
-<div class="line-block">
-<div class="line"><a class="reference external" href="https://github.com/cselab/aphros/blob/master/examples/003_h5_serial_write/main.c">examples/003_h5_serial_write/main.c</a></div>
-</div>
-<p>Write a field using mpi:</p>
-<div class="line-block">
-<div class="line"><a class="reference external" href="https://github.com/cselab/aphros/blob/master/examples/004_h5_mpi_write/main.c">examples/004_h5_mpi_write/main.c</a></div>
-</div>
-</div>
-</div>
-<span id="document-lib3/march"></span><div class="section" id="marching-cubes">
-<h3><span class="section-number">11.2. </span>Marching cubes<a class="headerlink" href="#marching-cubes" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="synopsis">
-<h4><span class="section-number">11.2.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
-<p>Marching cubes.</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;march.h&gt;</span><span class="cp"></span>
-
-<span class="k">static</span> <span class="kt">double</span> <span class="n">MARCH_O</span><span class="p">[][</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">},</span>
-  <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">},</span>
-<span class="p">};</span>
-<span class="k">enum</span> <span class="p">{</span> <span class="n">MARCH_NTRI</span> <span class="o">=</span> <span class="mi">48</span> <span class="p">};</span>
-<span class="kt">int</span> <span class="nf">march_cube</span><span class="p">(</span><span class="kt">double</span> <span class="n">u</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="kt">int</span><span class="o">*</span> <span class="n">ntri</span><span class="p">,</span> <span class="kt">double</span><span class="o">*</span> <span class="n">tri</span><span class="p">);</span>
-<span class="kt">int</span> <span class="nf">march_cube_location</span><span class="p">(</span><span class="kt">double</span> <span class="n">u</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="kt">int</span><span class="o">*</span> <span class="n">ntri</span><span class="p">,</span> <span class="kt">double</span><span class="o">*</span> <span class="n">tri</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span> <span class="n">first</span><span class="p">,</span> <span class="kt">int</span><span class="o">*</span> <span class="n">second</span><span class="p">,</span> <span class="kt">double</span><span class="o">*</span> <span class="n">offset</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="description">
-<h4><span class="section-number">11.2.2. </span>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h4>
-<p>Generates triangles of the isosurface for three-dimensional discrete
-field.</p>
-<p>march_cube generates triangles for one cell, u[8] are values of the
-field in the nodes. Returns ntri – the number of triangles, tri –
-vertices of the triangles in the form [x0 y0 z0 … xn yn zn].</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">double</span> <span class="n">cube</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">-1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">};</span>
-<span class="kt">double</span> <span class="n">tri</span><span class="p">[</span><span class="mi">3</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">MARCH_NTRI</span><span class="p">];</span>
-<span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
-
-<span class="n">march_cube</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">n</span><span class="p">,</span> <span class="n">tri</span><span class="p">);</span>
-</pre></div>
-</div>
-<p>MARCH_NTRI is a maximum number of triangles.
-MARCH_O[8][3] are coordinates of the nodes.</p>
-<p>march_cube_location in addition to the output of the march_cube
-returns location of the vertex i relative the nodes.
-first[i], second[i] are indexes of the nodes. offset[i] is a
-relative distance from the node first[i].</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Created by Sergey Litvinov on 24.12.2019</span>
-<span class="c1">// Copyright 2019 ETH Zurich</span>
-
-<span class="cp">#undef NDEBUG</span>
-<span class="cp">#include</span> <span class="cpf">&lt;assert.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;math.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;aphros/march/march.h&gt;</span><span class="cp"></span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">enum</span> <span class="p">{</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span> <span class="p">};</span>
-  <span class="k">enum</span> <span class="p">{</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">MARCH_NTRI</span> <span class="p">};</span>
-  <span class="kt">double</span> <span class="n">u</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">-1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">-1</span><span class="p">},</span> <span class="n">tri</span><span class="p">[</span><span class="n">N</span><span class="p">],</span> <span class="n">offset</span><span class="p">[</span><span class="n">N</span><span class="p">],</span> <span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">;</span>
-  <span class="kt">int</span> <span class="n">first</span><span class="p">[</span><span class="n">N</span><span class="p">],</span> <span class="n">second</span><span class="p">[</span><span class="n">N</span><span class="p">],</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">;</span>
-
-  <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">march_cube_location</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">n</span><span class="p">,</span> <span class="n">tri</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">,</span> <span class="n">offset</span><span class="p">);</span>
-  <span class="n">a</span> <span class="o">=</span> <span class="n">MARCH_O</span><span class="p">[</span><span class="n">first</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="n">X</span><span class="p">];</span>
-  <span class="n">b</span> <span class="o">=</span> <span class="n">MARCH_O</span><span class="p">[</span><span class="n">second</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="n">X</span><span class="p">];</span>
-  <span class="n">x</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">offset</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-  <span class="n">assert</span><span class="p">(</span><span class="n">fabs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">tri</span><span class="p">[</span><span class="mi">3</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="n">X</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mf">1e-12</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="source">
-<h4><span class="section-number">11.2.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
-<p><a class="reference external" href="https://github.com/cselab/aphros/blob/master/deploy/lib/march">deploy/lib/march</a></p>
-</div>
-<div class="section" id="examples">
-<h4><span class="section-number">11.2.4. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
-<p>Generate triangles for cube configurations given as arguments:</p>
-<div class="line-block">
-<div class="line"><a class="reference external" href="https://github.com/cselab/aphros/blob/master/examples/001_march_cell/main.c">examples/001_march_cell/main.c</a></div>
-</div>
-<p>Generate a triangulated sphere:</p>
-<div class="line-block">
-<div class="line"><a class="reference external" href="https://github.com/cselab/aphros/blob/master/examples/002_march_sphere/main.c">examples/002_march_sphere/main.c</a></div>
-</div>
-</div>
-</div>
-<span id="document-lib3/vof"></span><div class="section" id="vof-advection">
-<h3><span class="section-number">11.3. </span>VOF advection<a class="headerlink" href="#vof-advection" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="synopsis">
-<h4><span class="section-number">11.3.1. </span>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h4>
 <p>Volume-of-fluid advection solver with PLIC reconstruction.</p>
 </div>
 <div class="section" id="parameters">
-<h4><span class="section-number">11.3.2. </span>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.1.2. </span>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">VofPar</span> <span class="p">{</span>
   <span class="k">using</span> <span class="n">Scal</span> <span class="o">=</span> <span class="k">typename</span> <span class="nc">M</span><span class="o">::</span><span class="n">Scal</span><span class="p">;</span>
   <span class="k">using</span> <span class="n">Vect</span> <span class="o">=</span> <span class="k">typename</span> <span class="nc">M</span><span class="o">::</span><span class="n">Vect</span><span class="p">;</span>
@@ -1634,7 +1462,7 @@ relative distance from the node first[i].</p>
 </div>
 </div>
 <div class="section" id="source">
-<h4><span class="section-number">11.3.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.1.3. </span>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h4>
 <div class="line-block">
 <div class="line"><a class="reference external" href="https://github.com/cselab/aphros/blob/master/src/solver/vof.h">src/solver/vof.h</a></div>
 <div class="line"><a class="reference external" href="https://github.com/cselab/aphros/blob/master/src/solver/vof.cpp">src/solver/vof.cpp</a></div>
@@ -1642,7 +1470,7 @@ relative distance from the node first[i].</p>
 </div>
 </div>
 <div class="section" id="example">
-<h4><span class="section-number">11.3.4. </span>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">11.1.4. </span>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
 <p><a class="reference external" href="https://github.com/cselab/aphros/blob/master/examples/100_advection/main.cpp">examples/100_advection/main.cpp</a></p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Created by Petr Karnakov on 24.12.2019</span>
 <span class="c1">// Copyright 2019 ETH Zurich</span>
@@ -2011,93 +1839,5 @@ See full example in <a class="reference external" href="https://github.com/csela
 </div>
 
 
-            <div class="clearer"></div>
-          </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table of Contents</a></h3>
-  <ul>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-intro">1. Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-comm">2. Communication</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-convdiff">3. Convection-diffusion equation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="index.html#implicit-solver">3.1. Implicit solver</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#explicit-solver">3.2. Explicit solver</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-fluid">4. Navier-Stokes equations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="index.html#simple">4.1. SIMPLE</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#projection">4.2. Projection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#boundary-conditions">4.3. Boundary conditions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-vofm">5. Multilayer VOF</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="index.html#connected-component-labeling">5.1. Connected-component labeling</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-embed">6. Embedded boundaries</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="index.html#advection-solver">6.1. Advection solver</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#diffusion-solver">6.2. Diffusion solver</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#taylor-couette-flow">6.3. Taylor-Couette flow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#hydrostatic">6.4. Hydrostatic</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-primlist">7. Geometric primitives</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-bclist">8. Boundary conditions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="index.html#code-blocks">8.1. Code blocks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#groups-of-primitives">8.2. Groups of primitives</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-output">9. Output</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-lib1/index">10. Tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib1/ap-cawk">10.1. AWK for CSV files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib1/ap-format">10.2. Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib1/ap-hist">10.3. Histogram</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-lib3/index">11. Library</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/h5">11.1. HDF5 IO wrapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/march">11.2. Marching cubes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-lib3/vof">11.3. VOF advection</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-log/index">12. Log</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="index.html#document-log/log">12.1. Surface tension as gradient</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#particle-normal-displacement">12.2. Particle normal displacement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#march-native">12.3. <code class="docutils literal notranslate"><span class="pre">march=native</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#max-iter">12.4. <code class="docutils literal notranslate"><span class="pre">max_iter</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#number-of-particles-and-strings">12.5. Number of particles and strings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#number-of-iterations-for-coalescence">12.6. Number of iterations for coalescence</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#relaxation-parameters">12.7. Relaxation parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#reduced-usage-of-getcenter">12.8. Reduced usage of <code class="docutils literal notranslate"><span class="pre">GetCenter</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#debug-linear-solver-with-convertlscompact">12.9. Debug linear solver with <code class="docutils literal notranslate"><span class="pre">ConvertLsCompact</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#registered-modules-in-ubuntu">12.10. Registered modules in Ubuntu</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#vtk-merge-comparison-of-floats-with-tolerance">12.11. VTK merge, comparison of floats with tolerance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#explicit-part-of-viscous-stress">12.12. Explicit part of viscous stress</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-styleguide">13. Contributing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="index.html#style-guide">13.1. Style guide</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="index.html#document-references">14. Bibliography</a></li>
-</ul>
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="nav-item nav-item-0"><a href="#">Aphros 0.1.2 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Aphros 0.1.2 documentation</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2021, ETH Zurich.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
-    </div>
-  </body>
+</body>
 </html>
