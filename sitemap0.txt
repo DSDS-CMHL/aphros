@@ -1,6 +1,0 @@
-https://cselab.github.io/aphros/aphros.pdf
-https://cselab.github.io/aphros/doc/index.html
-https://cselab.github.io/aphros/basilisk_partstr.zip
-https://cselab.github.io/aphros/curv.html
-https://cselab.github.io/aphros/wasm/hydro.html
-https://cselab.github.io/aphros/wasm/electrochem.html
