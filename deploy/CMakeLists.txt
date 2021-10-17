@@ -260,10 +260,12 @@ endif ()
 # AMGX
 set(CUDA_ARCH 60 CACHE STRING "Cuda architecture version to be passed to AMGX")
 set_property(CACHE CUDA_ARCH PROPERTY STRINGS 60 70)
+set(AMGX_TAG v2.2.0 CACHE STRING "AMGX tag or revision to build")
+set_property(CACHE AMGX_TAG PROPERTY STRINGS 60 70)
 if (USE_AMGX)
     ExternalProject_Add(amgx
         GIT_REPOSITORY "https://github.com/NVIDIA/AMGX"
-        GIT_TAG v2.1.x
+        GIT_TAG ${AMGX_TAG}
         GIT_SHALLOW ON
         #PATCH_COMMAND git apply "${CMAKE_CURRENT_SOURCE_DIR}/amgx_no_comm_report.patch"
         CMAKE_ARGS
