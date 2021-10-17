@@ -61,6 +61,11 @@ endif()
 
 if (USE_AMGX)
   find_package(CUDAToolkit)
+  set(T "amgxshi")
+  add_library(${T} INTERFACE)
+  target_include_directories(${T} INTERFACE ${APHROS_PREFIX}/include)
+  target_link_libraries(${T} INTERFACE -L${APHROS_PREFIX}/lib -lamgxsh)
+  install(TARGETS ${T} EXPORT export DESTINATION lib)
 endif()
 
 if (USE_HYPRE)
