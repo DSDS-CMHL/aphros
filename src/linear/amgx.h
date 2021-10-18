@@ -332,6 +332,7 @@ class Resources {
   }
   Resources(AMGX_config_handle config, MPI_Comm comm, int device)
       : comm_(comm) {
+    CUDACALL(cudaDeviceSynchronize());
     AMGXCALL(AMGX_resources_create(&handle_, config, &comm_, 1, &device));
   }
   ~Resources() noexcept(false) {
