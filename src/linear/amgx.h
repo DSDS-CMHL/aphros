@@ -318,7 +318,9 @@ class Solver {
     return res;
   }
   double GetResidual() const {
-    return GetResidual(GetNumIters() - 1, 0);
+    int n;
+    n = GetNumIters();
+    return n == 0 ? 0 : GetResidual(n - 1, 0);
   }
 
  private:
