@@ -53,6 +53,7 @@ set int enable_erasevf 0
 set int enable_fluid 1
 set int enable_surftens 1
 set int enable_tracer 0
+set int enable_stepwise_body 0
 
 # erasevf
 set vect erasevf_rect_x0 0 0 0
@@ -62,7 +63,8 @@ set double erasevf_per 1
 
 # tracer
 set int tracer_layers 2
-set double cflt 0.25
+set double cfl_tracer_advection 0.25
+set double cfl_tracer_diffusion 0.125
 set string tracer_scheme superbee
 set int tracer_override_mixture 0
 set int tracer_use_termvel 0
@@ -73,6 +75,7 @@ set vect tracer_viscosity 0 0
 set vect tracer_termvel 0 0
 set vect tracer_diameter 0 0
 set int tracer_override_mixture 0
+set double tracer_interface_diffusion_factor 0
 set string tracer0_list_path inline
 set string tracer1_list_path inline
 set string tracer0_init zero
@@ -82,12 +85,25 @@ set string tracer1_slip none
 set double tracer0_factor 1
 set double tracer1_factor 1
 
-# nucleation
+# electro
+set int enable_electro_control 0 # Controller of potential for given current.
+set double resist1 1
+set double resist2 1000
+set double flux_from_current 0
+set double electro_control_current 0 # Controller target current.
+set double electro_control_rate 0 # Controller rate, [potential/current].
+set double electro_control_initial_potential 0
+
+# nucleation through cells
 set int enable_nucleation 0
 set double nucleation_cmax0 0.4 # critical concentration of tracer 0
 set double nucleation_rate0 1 # nucleation rate from tracer 0
 set double nucleation_cmax1 0.4 # critical concentration of tracer 1
 set double nucleation_rate1 1 # nucleation rate from tracer 1
+
+# nucleation through points
+set int enable_nucleation_points 0
+set double nucleation_number_density 0
 
 # bubble growth from tracers
 set double growth_rate_tracer0 0
@@ -104,6 +120,13 @@ set string particles_mode tracer
 set vect particles_spawn_velocity 0 0 0
 set vect particles_radius 0
 set double particles_density 1
+set string particles_init_csv # path to csv file
+set string particles_dumplist id x y z vx vy vz r
+set int particles_to_vof 0
+set double particles_to_vof_radius 2
+set int particles_coal 0
+set double particles_growth_diffusion_factor 0
+set double particles_growth_rate 8
 
 # embedded boundaries
 set string eb_init list
@@ -116,6 +139,14 @@ set int eb_init_inverse 1
 set double embed_gradlim 0.5
 set string bc_path bc.dat
 set int embed_smoothen_iters 0
+
+# stepwise body
+set int dump_stepwise_body 0
+set string body_list_path body.dat
+#set string body_init list
+set string body_init zero
+set int body_init_inverse 0
+set double stepwise_threshold 0.5 # Minimum volume fraction for inner cell.
 
 # convergence
 set double tol 1e-3
@@ -154,45 +185,49 @@ set vect slipvel 1 0 0
 set int stokes 0
 set int convsymm 0
 set int explconv 0
-set int explviscous 0
+set int explviscous 1 # enable explicit part of viscous terms
 set double outlet_relax 1
 
 # advection solver
 # vof: standard VOF, vofm: multi-VOF for coalescence prevention
 set string advection_solver vof
-
-# use forward-backward PLIC sharpening
-set int sharpen 0
-set double sharpen_cfl 0.1
 set string vof_scheme weymouth
 set int vof_verb 0
+set double clipth 1e-10 # set volume fractions within this threshold to 0 or 1
+set double filterth 0 # remove orphan fragments without neighbors above threshold
+
+set int sharpen 0 # use forward-backward PLIC sharpening
+set double sharpen_cfl 0.1
+
+# algorithm for connected component labeling (propagation, unionfind)
+# propagation: iterative label propagation on blocks and between blocks
+# unionfind: union-find on blocks, iterative between blocks
+set string labeling unionfind
 set int vof_recolor_unionfind 1
+set int vof_recolor_verbose 0
 set int vof_recolor_reduce 1
 set int vof_recolor_grid 1
+set double clfixed -1
+set vect clfixed_x 1e10 1e10 1e10
+set double vofm_coalth 1e10
 
 # curvature estimation with particles
-set int part 1
-set double part_relax 0.5
+set string curvature particles
 set double part_h 4
-set int part_k 1
-set int part_bendmean 1
-set int part_itermax 20
-set double part_tol 1e-5
-set double clipth 1e-10
-set double part_segcirc 0. # factor for circular segment
-set int part_ns 3
+set double part_relax 0.5
 set int part_np 7
-set int part_verb 0
-set double part_tmax 180.   # total angle for string [deg]
-set double part_dtmax 10.   # difference in theta at one iteration [deg]
+set double part_segcirc 0 # factor for circular segment
 set int part_dn 0  # normal displacement
+set int part_ns 3
+set double part_tol 1e-5
+set int part_itermax 20
+set int part_verb 0
 
 # vofm
 set double avgnorm0 1
 set double avgnorm1 1
 set int vofm_layers 4
 # coalescence is triggered the sum of volume fractions exceeds this value
-set double vofm_coalth 1e10
 set int vof_extrapolate_boundaries 0
 
 # physical
@@ -219,12 +254,6 @@ set double bcc_fill 0
 set double bcc_clear0 0      # range for clipping vf near walls
 set double bcc_clear1 1      # value set to 0 or 1 if outside the range
 set double inletcl 1          # inlet color
-
-set string body_bc wall 0 0 0
-set string body_list_path body.dat
-#set string body_init list
-set string body_init zero
-set int body_init_inverse 0
 
 # fixed pressure point
 #set double pfixed 0
@@ -433,7 +462,7 @@ set double dump_traj_t0 0
 set double dump_traj_dt 1
 set int dump_traj_max 10000
 
-# output vof 
+# output vof
 set int dumppoly 1
 set int dumppolymarch 1
 set double dumppolymarch_fill -1  # value to fill halo cells, applied if >=0
@@ -444,8 +473,6 @@ set double dump_part_dt 1
 set int dump_part_max 10000
 set int part_dump_fr 1
 set int part_report_fr 1
-set double clfixed -1
-set vect clfixed_x 1e10 1e10 1e10
 set int cloverride 0
 set int vtkbin 1
 set int vtkmerge 1
